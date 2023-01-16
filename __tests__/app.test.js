@@ -31,6 +31,13 @@ describe("GET api/topics", () => {
       });
   });
 
+  test("Returns Error with 404", () => {
+    return request(app)
+      .get("/api/ty")
+      .expect(404);
+      
+  });
+
   test("responds with 200 and shows all topics", () => {
     const formattedObject = {};
     return request(app)
@@ -48,3 +55,31 @@ describe("GET api/topics", () => {
       });
   });
 });
+
+// describe("/api/articles", () => {
+//   test("Returns an array of articles objects, each of which should have the following properties", () => {
+//     return request(app)
+//       .get("/api/articles")
+// .expect(200)
+// .then((result) => {
+//   expect(result.body.length).toBe(3);
+// });
+// });
+
+// test("responds with 200 and shows all topics", () => {
+//   const formattedObject = {};
+//   return request(app)
+//     .get("/api/topics")
+//     .expect(200)
+//     .then((result) => {
+//       result.body.forEach((topic) => {
+//         expect(topic).toHaveProperty("slug");
+//         expect(topic).toHaveProperty("description");
+//       });
+//       expect(result.body[0]).toEqual({
+//         slug: "mitch",
+//         description: "The man, the Mitch, the legend",
+//       });
+//     });
+// });
+//});

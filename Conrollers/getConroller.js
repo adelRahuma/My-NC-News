@@ -1,5 +1,6 @@
 const { getTopicsMdl } = require("../modles/getModel");
 
+
 function getTopics(req, res, next) {
   getTopicsMdl(req)
     .then((data) => {
@@ -14,4 +15,5 @@ function getTopics(req, res, next) {
 function getapi(req, res, next) {
   res.status(200).send({ msg: "No content found" });
 }
-module.exports = { getTopics, getapi };
+function getArticles(req, res) {}
+module.exports = { getTopics, getapi, getArticles };
