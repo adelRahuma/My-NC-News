@@ -8,7 +8,7 @@ function getTopicsMdl(request) {
       return result.rows;
     })
     .catch(() => {
-      return Promise.reject({status:404, msg:"not found"});
+      return Promise.reject({ status: 404, msg: "not found" });
     });
 }
 function getArticlesMdl(request) {
@@ -39,7 +39,7 @@ function getarticle_idMdl(id) {
       return Obj;
     })
     .catch(() => {
-      return Promise.reject({status:404, msg:"not found"});
+      return Promise.reject({ status: 404, msg: "not found" });
     });
 }
 function getarticle_cmntMdl(req) {
@@ -52,8 +52,8 @@ function getarticle_cmntMdl(req) {
     .then((result) => {
       return result.rows;
     })
-    .catch(( ) => {
-      return Promise.reject({status:404, msg:"not found"});
+    .catch(() => {
+      return Promise.reject({ status: 404, msg: "not found" });
     });
 }
 
