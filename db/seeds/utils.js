@@ -20,3 +20,11 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+exports.FormatData = (lookObj) => {
+  return lookObj.map((data) => {
+    return [
+      data.slug,
+      data.description,
+    ];
+  });
+};
