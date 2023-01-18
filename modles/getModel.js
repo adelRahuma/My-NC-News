@@ -50,10 +50,22 @@ function getarticle_cmntMdl(req) {
       else return result.rows;
     });
 }
-
+function getUsersMdl(req) {
+  return db
+    .query("SELECT * FROM users")
+    .then((result) => {
+      if (result.rowCount === 0)
+        return Promise.reject({ status: 404, msg: "not found" });
+      else return result.rows;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 module.exports = {
   getTopicsMdl,
   getArticlesMdl,
   getarticle_cmntMdl,
   getarticle_idMdl,
+  getUsersMdl,
 };
