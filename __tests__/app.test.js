@@ -171,3 +171,38 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("8. PATCH /api/articles/:article_id", () => {
+  test("Returns partial update", () => {
+    const article_id = 9;
+    const incremnt = { inc_votes: 100 };
+    return request(app)
+      .patch(`/api/articles/${article_id}`)
+      .send(incremnt)
+      .expect(200)
+      .then((result) => {
+        result.body.forEach((item) => {
+          expect(item).toHaveProperty("article_id");
+          expect(item).toHaveProperty("title");
+          expect(item).toHaveProperty("topic");
+          expect(item).toHaveProperty("author");
+          expect(item).toHaveProperty("body");
+          expect(item).toHaveProperty("created_at");
+          expect(item).toHaveProperty("votes");
+          expect(item).toHaveProperty("article_img_url");
+        });
+        expect(result.body).toEqual([
+          {
+            article_id: 9,
+            title: "They're not exactly dogs, are they?",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "Well? Think about it.",
+            created_at: "2020-06-06T09:10:00.000Z",
+            votes: 100,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          },
+        ]);
+      });
+  });
+});

@@ -2,14 +2,11 @@ const db = require("../db/connection");
 const { FormatData } = require("../db/seeds/utils");
 
 function getTopicsMdl(request) {
-  return db
-    .query("SELECT * FROM topics")
-    .then((result) => {
-      return result.rows;
-    })
-    .catch(() => {
+  return db.query("SELECT * FROM topics").then((result) => {
+    if (result.rows === 0)
       return Promise.reject({ status: 404, msg: "not found" });
-    });
+    else return result.rows;
+  });
 }
 function getArticlesMdl(request) {
   let queryString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url,  COUNT(comments.body) AS comment_count
@@ -36,10 +33,8 @@ function getarticle_idMdl(id) {
       for (let i = 0; i < result.rows.length; i++) {
         Object.assign(Obj, result.rows[i]);
       }
-      return Obj;
-    })
-    .catch(() => {
-      return Promise.reject({ status: 404, msg: "not found" });
+      if (Obj === {}) return Promise.reject({ status: 404, msg: "not found" });
+      else return Obj;
     });
 }
 function getarticle_cmntMdl(req) {
@@ -50,10 +45,9 @@ function getarticle_cmntMdl(req) {
       [article_id]
     )
     .then((result) => {
-      return result.rows;
-    })
-    .catch(() => {
-      return Promise.reject({ status: 404, msg: "not found" });
+      if (result.rows === 0)
+        return Promise.reject({ status: 404, msg: "not found" });
+      else return result.rows;
     });
 }
 
