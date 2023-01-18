@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { postArticleMdl,patcharticle_idMdl } = require("../modles/postModel");
+const { postArticleMdl, patcharticle_idMdl } = require("../modles/postModel");
 const postArticle = (req, res, next) => {
   postArticleMdl(req)
     .then((data) => {
@@ -11,13 +11,13 @@ const postArticle = (req, res, next) => {
     });
 };
 function patcharticle_id(req, res, next) {
-  patcharticle_idMdl(req)
- .then((data) => {
-  res.status(201).send(data);
- })
- .catch((err) => {
-   console.log(err);
-   next(err);
- });
+  updateVotes(req)
+    .then((data) => {
+      res.status(201).send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 }
 module.exports = { postArticle, patcharticle_id };

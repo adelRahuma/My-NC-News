@@ -144,7 +144,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 });
-describe.only("POST /api/articles/:article_id/comments", () => {
+describe("POST /api/articles/:article_id/comments", () => {
   test("", () => {
     const postartecle = [
       {
@@ -178,7 +178,7 @@ describe("8. PATCH /api/articles/:article_id", () => {
     return request(app)
       .patch(`/api/articles/${article_id}`)
       .send(incremnt)
-      .expect(201)
+      .expect(200)
       .then((result) => {
         result.body.forEach((item) => {
           expect(item).toHaveProperty("article_id");

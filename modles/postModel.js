@@ -13,14 +13,13 @@ function postArticleMdl(req) {
       ]
     )
     .then((result) => {
-      return result.rows;
-    })
-    .catch(() => {
-      return Promise.reject({ status: 404, msg: "not found" });
+      if (result.rows === 0)
+        return Promise.reject({ status: 404, msg: "not found" });
+      else return result.rows;
     });
 }
 
-function patcharticle_idMdl(req) {
+function updateVotes(req) {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
   return db
@@ -34,10 +33,7 @@ function patcharticle_idMdl(req) {
       } else {
         return result.rows;
       }
-    })
-    .catch((err) => {
-      console.log(err);
     });
 }
 
-module.exports = { postArticleMdl, patcharticle_idMdl };
+module.exports = { postArticleMdl, updateVotes };
