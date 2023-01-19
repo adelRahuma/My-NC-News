@@ -2,7 +2,8 @@ const {
   getTopicsMdl,
   getArticlesMdl,
   getarticle_cmntMdl,
-  getarticle_idMdl,getUsersMdl,
+  getarticle_idMdl,
+  getUsersMdl,
 } = require("../modles/getModel");
 
 function getTopics(req, res, next) {
@@ -32,12 +33,12 @@ function getArticles(req, res, next) {
 function getarticle_id(req, res, next) {
   const { id } = req.params;
 
-  getarticle_idMdl(id)
+  getarticle_idMdl(req)
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
       next(err);
     });
 }

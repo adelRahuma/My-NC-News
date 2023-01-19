@@ -273,3 +273,47 @@ describe("9. GET /api/users", () => {
       });
   });
 });
+
+describe("10. GET /api/articles (queries)", () => {
+  test("Returns An article response object should also now include", () => {
+    const topic = "mitch";
+    const sort_by = ["ASC", "DECS"];
+    return request(app)
+      .get(`/api/articles/${topic}/${sort_by[1]}`)
+      .expect(200)
+      .then((data) => {
+        expect(data.body.length).toBe(11);
+      });
+  });
+  test("Returns An article not found", () => {
+    const topic = "coding";
+    const sort_by = ["ASC", "DECS"];
+    return request(app)
+      .get(`/api/articles/${topic}/${sort_by[1]}`)
+      .expect(404)
+      .then((data) => {
+        // console.log(data);
+        expect(data.body.msg).toBe("Path not found");
+      });
+  });
+  test("Returns An article response object should also now include", () => {
+    const article_id = 1;
+    const sort_by = ["ASC", "DECS"];
+    return request(app)
+      .get(`/api/articles/${article_id}/${sort_by[0]}`)
+      .expect(200)
+      .then((data) => {
+        data.body.forEach((item) => {
+          expect(item).toHaveProperty("article_id");
+          expect(item).toHaveProperty("title");
+          expect(item).toHaveProperty("topic");
+          expect(item).toHaveProperty("author");
+          expect(item).toHaveProperty("body");
+          expect(item).toHaveProperty("created_at");
+          expect(item).toHaveProperty("votes");
+          expect(item).toHaveProperty("article_img_url");
+        });
+      });
+  });
+});
+
