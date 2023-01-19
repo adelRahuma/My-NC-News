@@ -281,6 +281,9 @@ describe("10. GET /api/articles (queries)", () => {
       .get(`/api/articles?topic=mitch&order=ASC&sortBy=article_id`)
       .expect(200)
       .then((data) => {
+        data.body.forEach((item) => {
+          expect(item.topic).toBe("mitch");
+        });
         expect(data.body.length).toBe(11);
       });
   });
