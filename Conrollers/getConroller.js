@@ -2,7 +2,7 @@ const {
   getTopicsMdl,
   getArticlesMdl,
   getarticle_cmntMdl,
-  getarticle_idMdl,
+  getarticle_idMdl,getUsersMdl,
 } = require("../modles/getModel");
 
 function getTopics(req, res, next) {
