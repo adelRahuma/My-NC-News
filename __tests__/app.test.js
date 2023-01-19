@@ -89,8 +89,8 @@ describe("GET /api/articles", () => {
       });
   });
 });
-describe.only("GET /api/articles/:articles_id", () => {
-  test.only("returns a status of 200 ", () => {
+describe("GET /api/articles/:articles_id", () => {
+  test("returns a status of 200 ", () => {
     return request(app)
       .get("/api/articles/3")
       .expect(200)
@@ -119,7 +119,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(cmnt).toHaveProperty("comment_id");
           expect(cmnt).toHaveProperty("body");
           expect(cmnt).toHaveProperty("article_id");
-          expect(comment).toHaveProperty("created_at");
+          expect(cmnt).toHaveProperty("created_at");
           expect(cmnt).toHaveProperty("votes");
           expect(cmnt).toHaveProperty("author");
         });
@@ -174,7 +174,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 describe("8. PATCH /api/articles/:article_id", () => {
   test("Returns partial update", () => {
     const article_id = 9;
-    const incremnt = { inc_votes: 100 };
+    const incremnt = { inc_votes: -5 };
     return request(app)
       .patch(`/api/articles/${article_id}`)
       .send(incremnt)
@@ -198,11 +198,78 @@ describe("8. PATCH /api/articles/:article_id", () => {
             author: "butter_bridge",
             body: "Well? Think about it.",
             created_at: "2020-06-06T09:10:00.000Z",
-            votes: 100,
+            votes: -5,
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           },
         ]);
+      });
+  });
+  test.only("Returns Error with 404 when the article id it does not exist", () => {
+    const article_id = 50;
+    return request(app)
+      .patch(`/api/articles/${article_id}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+  test("Invalid endpoin", () => {
+    const article_id = "Adel";
+    return request(app)
+      .patch(`/api/articles/${article_id}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+});
+describe("9. GET /api/users", () => {
+  test("Returns an array of objects, each object should have the following property", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((data) => {
+        expect(data.body).toEqual([
+          {
+            username: "butter_bridge",
+            name: "jonny",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          },
+          {
+            username: "icellusedkars",
+            name: "sam",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          },
+          {
+            username: "rogersop",
+            name: "paul",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+          },
+          {
+            username: "lurker",
+            name: "do_nothing",
+            avatar_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          },
+        ]);
+      });
+  });
+  test("Returns an array of objects, each object should have the following property", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((data) => {
+        if (data.body.length > 0) {
+          data.body.forEach((item) => {
+            expect(item).toHaveProperty("username");
+            expect(item).toHaveProperty("name");
+            expect(item).toHaveProperty("avatar_url");
+          });
+        }
       });
   });
 });

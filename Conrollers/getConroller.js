@@ -2,7 +2,7 @@ const {
   getTopicsMdl,
   getArticlesMdl,
   getarticle_cmntMdl,
-  getarticle_idMdl,
+  getarticle_idMdl,getUsersMdl,
 } = require("../modles/getModel");
 
 function getTopics(req, res, next) {
@@ -51,10 +51,21 @@ function getarticle_cmnt(req, res, next) {
       next(err);
     });
 }
+function getUsers(req, res, next) {
+  getUsersMdl(req)
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+}
 module.exports = {
   getTopics,
   getapi,
   getArticles,
   getarticle_cmnt,
   getarticle_id,
+  getUsers,
 };

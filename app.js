@@ -6,6 +6,7 @@ const {
   getArticles,
   getarticle_cmnt,
   getarticle_id,
+  getUsers,
 } = require("./Conrollers/getConroller");
 const { postArticle, patcharticle_id } = require("./Conrollers/postConroller");
 const app = express();
@@ -17,31 +18,38 @@ app.get(`/api/articles/:article_id/comments`, getarticle_cmnt);
 app.get("/api/articles/:id", getarticle_id);
 app.post("/api/articles/:article_id/comments", postArticle);
 app.patch(`/api/articles/:article_id`, patcharticle_id);
+app.get("/api/users", getUsers);
 
 app.get("/", (request, response, next) => {
   response.status(404).send({ msg: "Path not found" });
 });
 app.use((err, req, res, next) => {
-  if (err.status && err.msg){
-    res.status(err.status).send({msg: err.msg});
+  if (err.status && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
   }
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === '22P02'){
-    res.status(400).send({msg: "Invalid Path"});
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Article not found" });
   } else {
     next(err);
   }
 });
-
 app.use((err, req, res, next) => {
-  res.status(500).send({msg: "server error"});
+  if (err.code === "42703") {
+    res.status(400).send({ msg: "Article not found" });
+  } else {
+    next(err);
+  }
+});
+app.use((err, req, res, next) => {
+  res.status(500).send({ msg: "server error" });
 });
 app.use((req, res, next) => {
-  res.status(404).send({msg: "Path not found"});
+  res.status(404).send({ msg: "Path not found" });
 });
 
 module.exports = { app };
