@@ -205,7 +205,7 @@ describe("8. PATCH /api/articles/:article_id", () => {
         ]);
       });
   });
-  test.only("Returns Error with 404 when the article id it does not exist", () => {
+  test("Returns Error with 404 when the article id it does not exist", () => {
     const article_id = 50;
     return request(app)
       .patch(`/api/articles/${article_id}`)
@@ -275,45 +275,55 @@ describe("9. GET /api/users", () => {
 });
 
 describe("10. GET /api/articles (queries)", () => {
-  test("Returns An article response object should also now include", () => {
+  test("Returns An article response object with  an existing topic sorted in descending order", () => {
     const topic = "mitch";
-    const sort_by = ["ASC", "DECS"];
     return request(app)
-      .get(`/api/articles/${topic}/${sort_by[1]}`)
+      .get(`/api/articles?topic=mitch&order=ASC&sortBy=article_id`)
       .expect(200)
       .then((data) => {
         expect(data.body.length).toBe(11);
       });
   });
-  test("Returns An article not found", () => {
-    const topic = "coding";
-    const sort_by = ["ASC", "DECS"];
+
+  test("Returns articles filtred by topic and sorted by and ordered by the defult values", () => {
+    const topic = "mitch";
     return request(app)
-      .get(`/api/articles/${topic}/${sort_by[1]}`)
-      .expect(404)
-      .then((data) => {
-        // console.log(data);
-        expect(data.body.msg).toBe("Path not found");
-      });
-  });
-  test("Returns An article response object should also now include", () => {
-    const article_id = 1;
-    const sort_by = ["ASC", "DECS"];
-    return request(app)
-      .get(`/api/articles/${article_id}/${sort_by[0]}`)
+      .get(`/api/articles?topic=mitch`)
       .expect(200)
-      .then((data) => {
-        data.body.forEach((item) => {
-          expect(item).toHaveProperty("article_id");
-          expect(item).toHaveProperty("title");
-          expect(item).toHaveProperty("topic");
-          expect(item).toHaveProperty("author");
-          expect(item).toHaveProperty("body");
-          expect(item).toHaveProperty("created_at");
-          expect(item).toHaveProperty("votes");
-          expect(item).toHaveProperty("article_img_url");
-        });
-      });
+      .then((data) => expect(data.body.length).toBe(11));
   });
 });
+test("Returns an array of all articles objects if no topic", () => {
+  return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then((result) => {
+      expect(result.body).toHaveLength(12);
+      result.body.forEach((topic) => {
+        expect(topic).toHaveProperty("author");
+        expect(topic).toHaveProperty("title");
+        expect(topic).toHaveProperty("article_id");
+        expect(topic).toHaveProperty("created_at");
+        expect(topic).toHaveProperty("votes");
+        expect(topic).toHaveProperty("article_img_url");
+      });
+      expect(result.body[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+      expect(result.body[0].comment_count).toBe("2");
+      expect(result.body[5].comment_count).toBe("11");
+      expect(result.body[result.body.length - 1].created_at).toBe(
+        "2020-01-07T14:08:00.000Z"
+      );
+    });
+});
 
+test("Returns a 404 err status when passing topic which doesn`t exist", () => {
+  const topic = "coding";
+  const sort_by = ["ASC", "DECS"];
+  return request(app)
+    .get(`/api/articles?topic=coding&order=DESC`)
+    .expect(404)
+    .then((data) => {
+      // console.log(data);
+      expect(data.body.msg).toBe("Path not found");
+    });
+});

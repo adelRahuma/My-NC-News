@@ -21,12 +21,13 @@ function getapi(req, res, next) {
   res.status(200).send({ msg: "No content found" });
 }
 function getArticles(req, res, next) {
-  getArticlesMdl(req)
+  const { sortBy, order } = req.query;
+
+  getArticlesMdl(req, sortBy, order)
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 }
@@ -38,7 +39,6 @@ function getarticle_id(req, res, next) {
       res.status(200).send(data);
     })
     .catch((err) => {
-      // console.log(err);
       next(err);
     });
 }
