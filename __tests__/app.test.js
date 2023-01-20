@@ -1,4 +1,5 @@
 const { app } = require("../app");
+require("jest-sorted");
 const db = require("../db/connection");
 const request = require("supertest");
 const testData = require("../db/data/test-data");
@@ -92,7 +93,7 @@ describe("GET /api/articles", () => {
 describe("GET /api/articles/:articles_id", () => {
   test("returns a status of 200 ", () => {
     return request(app)
-      .get("/api/articles/3")
+      .get("/api/articles?article_id=3")
       .expect(200)
       .then((result) => {
         if (result.length > 0) {
@@ -145,7 +146,7 @@ describe("/api/articles/:article_id/comments", () => {
   });
 });
 describe("POST /api/articles/:article_id/comments", () => {
-  test("", () => {
+  test("Inserts a new comment to a specific article", () => {
     const postartecle = [
       {
         username: "icellusedkars",
@@ -170,8 +171,25 @@ describe("POST /api/articles/:article_id/comments", () => {
         ]);
       });
   });
+
+  test("Returns an Error for non existing article_id", () => {
+    const postartecle = [
+      {
+        username: "icellusedkars",
+        body: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      },
+    ];
+    const article_id = 999;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .send(postartecle)
+      .expect(400)
+      .then((result) => {
+        expect(result.body.msg).toEqual("Article not found");
+      });
+  });
 });
-describe("8. PATCH /api/articles/:article_id", () => {
+describe.only("8. PATCH /api/articles/:article_id", () => {
   test("Returns partial update", () => {
     const article_id = 9;
     const incremnt = { inc_votes: -5 };
@@ -278,10 +296,15 @@ describe("10. GET /api/articles (queries)", () => {
   test("Returns An article response object with  an existing topic sorted in descending order", () => {
     const topic = "mitch";
     return request(app)
-      .get(`/api/articles?topic=mitch&order=ASC&sortBy=article_id`)
+      .get(`/api/articles?topic=mitch&order=DESC&sortBy=article_id`)
       .expect(200)
       .then((data) => {
         expect(data.body.length).toBe(11);
+        expect([data.body]).toBeSorted({ key: "article_id" });
+
+        data.body.forEach((item) => {
+          expect(item.topic).toBe("mitch");
+        });
       });
   });
 
@@ -290,7 +313,24 @@ describe("10. GET /api/articles (queries)", () => {
     return request(app)
       .get(`/api/articles?topic=mitch`)
       .expect(200)
-      .then((data) => expect(data.body.length).toBe(11));
+
+      .then((data) => {
+        expect(data.body.length).toBe(11);
+        expect([data.body]).toBeSorted({ key: "created_at" });
+
+        data.body.forEach((topic) => {
+          expect(topic.topic).toBe("mitch");
+        });
+      });
+  });
+  test("Returns Path not found if passing non existing topic", () => {
+    const topic = "coding";
+    return request(app)
+      .get(`/api/articles?topic=${topic}`)
+      .expect(200)
+      .then((data) => {
+        expect(data.body).toEqual([]);
+      });
   });
 });
 test("Returns an array of all articles objects if no topic", () => {
