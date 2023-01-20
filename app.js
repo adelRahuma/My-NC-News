@@ -15,7 +15,7 @@ app.get("/api", getapi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get(`/api/articles/:article_id/comments`, getarticle_cmnt);
-app.get("/api/articles/:id", getarticle_id);
+//app.get("/api/articles/:id", getarticle_id);
 app.post("/api/articles/:article_id/comments", postArticle);
 app.patch(`/api/articles/:article_id`, patcharticle_id);
 app.get("/api/users", getUsers);

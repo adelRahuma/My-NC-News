@@ -92,7 +92,7 @@ describe("GET /api/articles", () => {
 describe("GET /api/articles/:articles_id", () => {
   test("returns a status of 200 ", () => {
     return request(app)
-      .get("/api/articles/3")
+      .get("/api/articles?article_id=3")
       .expect(200)
       .then((result) => {
         if (result.length > 0) {
@@ -281,10 +281,12 @@ describe("10. GET /api/articles (queries)", () => {
       .get(`/api/articles?topic=mitch&order=ASC&sortBy=article_id`)
       .expect(200)
       .then((data) => {
+        expect(data.body.length).toBe(11);
+        expect(data.body[0].article_id).toBe(1);
+        expect(data.body[data.body.length-1].article_id).toBe(12);
         data.body.forEach((item) => {
           expect(item.topic).toBe("mitch");
         });
-        expect(data.body.length).toBe(11);
       });
   });
 
@@ -293,7 +295,18 @@ describe("10. GET /api/articles (queries)", () => {
     return request(app)
       .get(`/api/articles?topic=mitch`)
       .expect(200)
-      .then((data) => expect(data.body.length).toBe(11));
+      
+      .then((data) =>{
+
+        expect(data.body.length).toBe(11);
+            expect(data.body[0].created_at).toBe('2020-11-03T09:12:00.000Z');
+            expect(data.body[data.body.length-1].created_at).toBe('2020-01-07T14:08:00.000Z');
+            data.body.forEach((topic) => {
+            expect(topic.topic).toBe("mitch");
+            
+            });
+        
+        });
   });
 });
 test("Returns an array of all articles objects if no topic", () => {
