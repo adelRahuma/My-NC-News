@@ -1,32 +1,32 @@
 const db = require("../db/connection");
 const { FormatData } = require("../db/seeds/utils");
 
-function getTopicsMdl(request) {
+function getTopicsMdl() {
   return db.query("SELECT * FROM topics").then((result) => {
     if (result.rows === 0)
       return Promise.reject({ status: 404, msg: "not found" });
     else return result.rows;
   });
 }
-function getArticlesMdl(request, sortBy = "created_at", order = "DESC") {
-  const { article_id, topic } = request.query;
+function getArticlesMdl(
+  article_id,
+  topic,
+  sortBy = "created_at",
+  order = "DESC"
+) {
   if (!topic) {
+    //for Task-4
     let queryString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url,  COUNT(comments.body) AS comment_count
   FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
   GROUP BY articles.article_id ORDER BY ${sortBy}  ${order};`;
 
-    return db
-      .query(queryString)
-      .then((result) => {
-        return result.rows;
-      })
-      .catch(() => {
-        return Promise.reject({
-          status: 400,
-          msg: "Please sort by acceptable parameter",
-        });
-      });
+    return db.query(queryString).then((result) => {
+      if (result.rows.length === 0)
+        return Promise.reject({ status: 400, msg: "not found" });
+      else return result.rows;
+    });
   } else if (topic !== undefined) {
+    //for Task-10
     return db
       .query(
         `SELECT * FROM articles WHERE topic = $1 ORDER BY ${sortBy} ${order}; `,

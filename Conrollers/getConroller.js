@@ -7,7 +7,7 @@ const {
 } = require("../modles/getModel");
 
 function getTopics(req, res, next) {
-  getTopicsMdl(req)
+  getTopicsMdl()
     .then((data) => {
       res.status(200).send(data);
     })
@@ -21,9 +21,9 @@ function getapi(req, res, next) {
   res.status(200).send({ msg: "No content found" });
 }
 function getArticles(req, res, next) {
-  const { sortBy, order } = req.query;
-
-  getArticlesMdl(req, sortBy, order)
+  const { article_id, topic, sortBy, order } = req.query;
+  console.log(article_id, topic, sortBy, order);
+  getArticlesMdl(article_id, topic, sortBy, order)
     .then((data) => {
       res.status(200).send(data);
     })
