@@ -22,7 +22,6 @@ function getapi(req, res, next) {
 }
 function getArticles(req, res, next) {
   const { article_id, topic, sortBy, order } = req.query;
-  console.log(article_id, topic, sortBy, order);
   getArticlesMdl(article_id, topic, sortBy, order)
     .then((data) => {
       res.status(200).send(data);
@@ -33,8 +32,7 @@ function getArticles(req, res, next) {
 }
 function getarticle_id(req, res, next) {
   const { id } = req.params;
-
-  getarticle_idMdl(req)
+  getarticle_idMdl(id)
     .then((data) => {
       res.status(200).send(data);
     })
@@ -43,7 +41,8 @@ function getarticle_id(req, res, next) {
     });
 }
 function getarticle_cmnt(req, res, next) {
-  getarticle_cmntMdl(req)
+  const { article_id } = req.params;
+  getarticle_cmntMdl(article_id)
     .then((data) => {
       res.status(200).send(data);
     })
@@ -53,7 +52,7 @@ function getarticle_cmnt(req, res, next) {
     });
 }
 function getUsers(req, res, next) {
-  getUsersMdl(req)
+  getUsersMdl()
     .then((data) => {
       res.status(200).send(data);
     })

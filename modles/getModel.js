@@ -8,12 +8,13 @@ function getTopicsMdl() {
     else return result.rows;
   });
 }
-function getArticlesMdl(
-  article_id,
-  topic,
-  sortBy = "created_at",
-  order = "DESC"
-) {
+function getArticlesMdl( article_id, topic,sortBy = "created_at", order = "DESC") {
+  const hydrateSort = ["created_at", "article_id", "title", "topic", "votes" ];
+  const hydrateorder = ["DESC", "ASC"];
+ 
+  if (!hydrateSort.includes(sortBy) || !hydrateorder.includes(order)){
+  return Promise.reject({status: 400, msg: 'Please sort and oredr by acceptable parameters'})
+} else 
   if (!topic) {
     //for Task-4
     let queryString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url,  COUNT(comments.body) AS comment_count
@@ -22,7 +23,7 @@ function getArticlesMdl(
 
     return db.query(queryString).then((result) => {
       if (result.rows.length === 0)
-        return Promise.reject({ status: 400, msg: "not found" });
+      return Promise.reject({ status: 400, msg: "not found" });  
       else return result.rows;
     });
   } else if (topic !== undefined) {
@@ -33,17 +34,17 @@ function getArticlesMdl(
         [topic]
       )
       .then((result) => {
-        if (result.rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "Path not found" });
-        } else {
-          return result.rows;
-        }
+
+        //if (result.rows.length === 0) {
+         // return //Promise.reject({ status: 404, msg: "Path not found" });  <=== According to the tutor Recommendations
+        // } else {
+         return result.rows;
+        // }
       });
   } else if (article_id !== undefined) {
   }
 }
-function getarticle_idMdl(req) {
-  const { id, sort_by } = req.params;
+function getarticle_idMdl(id) {
   if (!isNaN(id)) {
     return db
       .query(`SELECT * FROM articles WHERE article_id =$1;`, [id])
@@ -67,9 +68,7 @@ function getarticle_idMdl(req) {
       });
   }
 }
-function getarticle_cmntMdl(req) {
-  const { article_id } = req.params;
-
+function getarticle_cmntMdl(article_id) {
   return db
     .query(
       "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;",
@@ -81,7 +80,7 @@ function getarticle_cmntMdl(req) {
       else return result.rows;
     });
 }
-function getUsersMdl(req) {
+function getUsersMdl() {
   return db.query("SELECT * FROM users").then((result) => {
     if (result.rowCount === 0)
       return Promise.reject({ status: 404, msg: "user does not exist" });
