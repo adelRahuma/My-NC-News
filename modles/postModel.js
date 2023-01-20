@@ -6,7 +6,6 @@ function postArticleMdl(article_id, username, body) {
       [body, username, article_id, 0, "2023-01-11T00:00:00.000Z"]
     )
     .then((result) => {
-      console.log(result.rows);
       if (result.rows === 0)
         return Promise.reject({ status: 404, msg: "not found" });
       else return result.rows;

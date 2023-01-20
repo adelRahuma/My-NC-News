@@ -189,7 +189,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-describe.only("8. PATCH /api/articles/:article_id", () => {
+describe("8. PATCH /api/articles/:article_id", () => {
   test("Returns partial update", () => {
     const article_id = 9;
     const incremnt = { inc_votes: -5 };
@@ -307,7 +307,27 @@ describe("10. GET /api/articles (queries)", () => {
         });
       });
   });
+  test("it should return a 400 and Please sort by acceptable parameter messsage when invalid sort by ", () => {
+    return request(app)
+      .get(`/api/articles?topic=mitch&order=ASC&sortBy=body`)
+      .expect(400)
+      .then((data) => {
+        expect(data.body.msg).toBe(
+          "Please sort and oredr by acceptable parameters"
+        );
+      });
+  });
 
+  test("it should return a 400 and Please sort and oredr by acceptable parameters messsage when invalid order by ", () => {
+    return request(app)
+      .get(`/api/articles?topic=mitch&order=MKD&sortBy=body`)
+      .expect(400)
+      .then((data) => {
+        expect(data.body.msg).toBe(
+          "Please sort and oredr by acceptable parameters"
+        );
+      });
+  });
   test("Returns articles filtred by topic and sorted by and ordered by the defult values", () => {
     const topic = "mitch";
     return request(app)
@@ -361,9 +381,9 @@ test("Returns a 404 err status when passing topic which doesn`t exist", () => {
   const sort_by = ["ASC", "DECS"];
   return request(app)
     .get(`/api/articles?topic=coding&order=DESC`)
-    .expect(404)
+    .expect(200)
     .then((data) => {
       // console.log(data);
-      expect(data.body.msg).toBe("Path not found");
+      expect(data.body).toEqual([]);
     });
 });

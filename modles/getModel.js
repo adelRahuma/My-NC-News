@@ -8,12 +8,13 @@ function getTopicsMdl() {
     else return result.rows;
   });
 }
-function getArticlesMdl(
-  article_id,
-  topic,
-  sortBy = "created_at",
-  order = "DESC"
-) {
+function getArticlesMdl( article_id, topic,sortBy = "created_at", order = "DESC") {
+  const hydrateSort = ["created_at", "article_id", "title", "topic", "votes" ];
+  const hydrateorder = ["DESC", "ASC"];
+ 
+  if (!hydrateSort.includes(sortBy) || !hydrateorder.includes(order)){
+  return Promise.reject({status: 400, msg: 'Please sort and oredr by acceptable parameters'})
+} else 
   if (!topic) {
     //for Task-4
     let queryString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url,  COUNT(comments.body) AS comment_count

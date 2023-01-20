@@ -24,7 +24,6 @@ function getArticles(req, res, next) {
   const { article_id, topic, sortBy, order } = req.query;
   getArticlesMdl(article_id, topic, sortBy, order)
     .then((data) => {
-      console.log(data);
       res.status(200).send(data);
     })
     .catch((err) => {
